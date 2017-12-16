@@ -15,6 +15,7 @@ class DrugController {
     @Autowired
     lateinit var drugRepository: DrugRepository
 
+    @CrossOrigin
     @RequestMapping(value = "/drug",
             method = arrayOf(RequestMethod.POST),
             consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
@@ -22,9 +23,9 @@ class DrugController {
     fun addDrug(@RequestBody drug: Drug): ResponseEntity<Drug> =
             ResponseEntity(this.drugRepository.save(drug), HttpStatus.OK)
 
+    @CrossOrigin
     @RequestMapping(value = "/drug/id/{id}",
             method = arrayOf(RequestMethod.GET),
-            consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
             produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     fun getDrugByID(@PathVariable drugId: Long): ResponseEntity<Drug> {
         val drug = this.drugRepository.findOne(drugId)
@@ -35,13 +36,13 @@ class DrugController {
         }
     }
 
+    @CrossOrigin
     @RequestMapping(value = "/drug",
             method = arrayOf(RequestMethod.GET),
-            consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
             produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     fun getAllDrugs(): ResponseEntity<List<Drug>> {
         val drug = this.drugRepository.findAll()
-        return if (drug.isEmpty()) {
+        return if (!drug.isEmpty()) {
             ResponseEntity(drug.toMutableList(), HttpStatus.OK)
         } else {
             ResponseEntity.notFound().build()
@@ -50,7 +51,6 @@ class DrugController {
 
     @RequestMapping(value = "/drug/partOfName/{partOfName}",
             method = arrayOf(RequestMethod.GET),
-            consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
             produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     fun getAllDrugsByPartOfName(@PathVariable("partOfName") partOfName: String): ResponseEntity<List<Drug>> {
         val drug = this.drugRepository.findAllDrugsByPartOfName(partOfName)

@@ -15,6 +15,7 @@ class BusinessController {
     @Autowired
     lateinit var businessRepository: BusinessRepository
 
+    @CrossOrigin
     @RequestMapping(value = "/business",
             method = arrayOf(RequestMethod.POST),
             consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
@@ -23,6 +24,7 @@ class BusinessController {
         return ResponseEntity(this.businessRepository.save(business), HttpStatus.OK)
     }
 
+    @CrossOrigin
     @RequestMapping(value = "/business/{id}",
             method = arrayOf(RequestMethod.GET),
             consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
@@ -36,13 +38,14 @@ class BusinessController {
         }
     }
 
+    @CrossOrigin
     @RequestMapping(value = "/business",
             method = arrayOf(RequestMethod.GET),
-            consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
+
             produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
     fun getAllBusiness(): ResponseEntity<List<Business>> {
         val business = this.businessRepository.findAll()
-        return if (business.isEmpty()) {
+        return if (!business.isEmpty()) {
             ResponseEntity(business, HttpStatus.OK)
         } else {
             ResponseEntity.notFound().build()

@@ -20,7 +20,7 @@ class DrugController {
             method = arrayOf(RequestMethod.POST),
             consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
             produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun addDrug(@RequestBody drug: Drug): ResponseEntity<Drug> =
+    fun addDrug(@RequestBody drug: List<Drug>): ResponseEntity<List<Drug>> =
             ResponseEntity(this.drugRepository.save(drug), HttpStatus.OK)
 
     @CrossOrigin
@@ -43,22 +43,32 @@ class DrugController {
     fun getAllDrugs(): ResponseEntity<List<Drug>> {
         val drug = this.drugRepository.findAll()
         return if (!drug.isEmpty()) {
-            ResponseEntity(drug.toMutableList(), HttpStatus.OK)
+            ResponseEntity(drug, HttpStatus.OK)
         } else {
             ResponseEntity.notFound().build()
         }
     }
 
-    @RequestMapping(value = "/drug/partOfName/{partOfName}",
+    @CrossOrigin
+    @RequestMapping(value = "/drug/partOf",
             method = arrayOf(RequestMethod.GET),
             produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-    fun getAllDrugsByPartOfName(@PathVariable("partOfName") partOfName: String): ResponseEntity<List<Drug>> {
+    fun getAllDrugsByPartOfName(@RequestParam("name") partOfName: String): ResponseEntity<List<Drug>> {
         val drug = this.drugRepository.findAllDrugsByPartOfName(partOfName)
-        return if (drug.isEmpty()) {
+        return if (!drug.isEmpty()) {
             ResponseEntity(drug, HttpStatus.OK)
         } else {
             ResponseEntity.notFound().build()
         }
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/drug",
+            method = arrayOf(RequestMethod.DELETE),
+            produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    fun deleteAllDrugs(): ResponseEntity<Drug> {
+        this.drugRepository.deleteAll()
+        return ResponseEntity.ok().build()
     }
 
 }

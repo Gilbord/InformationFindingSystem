@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+build/
+gradle/
+gradlew.bat
+gradlew
+information-finding-system-backend.iml
